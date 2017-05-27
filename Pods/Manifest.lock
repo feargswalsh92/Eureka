@@ -1,0 +1,12 @@
+PODS:
+  - Eureka (3.0.0)
+
+DEPENDENCIES:
+  - Eureka
+
+SPEC CHECKSUMS:
+  Eureka: f36fd440c3ebb7bfea0a4fbe6f16a05f1cb35906
+
+PODFILE CHECKSUM: e6e3b7e03a73b71e5a12a24b5f088133b444af9a
+
+COCOAPODS: 1.2.1

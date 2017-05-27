@@ -1530,7 +1530,7 @@ class MultivaluedController: FormViewController {
     }
 }
 
-class MultivaluedOnlyRearderController: FormViewController {
+class MultivaluedOnlyReorderController: FormViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -1678,6 +1678,17 @@ class MultivaluedOnlyDeleteController: FormViewController {
         tableView.setEditing(!tableView.isEditing, animated: true)
         editButton.title = tableView.isEditing ? "Done" : "Edit"
         
+    }
+}
+
+class MyFormViewController: FormViewController {
+    override func viewDidLoad() {
+         super.viewDidLoad()
+         form +++ Section("Section 1")
+            <<< TextRow(){ row in
+                row.title = "Text Row"
+                row.placeholder = "Enter text here"
+        }
     }
 }
 
