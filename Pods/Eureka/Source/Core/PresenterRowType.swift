@@ -1,7 +1,7 @@
-//  MultipleSelectorRow.swift
+//  PresenterRowType.swift
 //  Eureka ( https://github.com/xmartlabs/Eureka )
 //
-//  Copyright (c) 2016 Xmartlabs SRL ( http://xmartlabs.com )
+//  Copyright (c) 2016 Xmartlabs ( http://xmartlabs.com )
 //
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,26 +24,32 @@
 
 import Foundation
 
-open class _MultipleSelectorRow<T: Hashable, Cell: CellType>: GenericMultipleSelectorRow<T, Cell, MultipleSelectorViewController<T>> where Cell: BaseCell, Cell: TypedCellType, Cell.Value == Set<T> {
-    public required init(tag: String?) {
-        super.init(tag: tag)
-    }
+/**
+ *  Protocol that every row that displays a new view controller must conform to.
+ *  This includes presenting or pushing view controllers.
+ */
+public protocol PresenterRowType: TypedRowType {
+
+    associatedtype ProviderType : UIViewController, TypedRowControllerType
+
+    /// Defines how the view controller will be presented, pushed, etc.
+    var presentationMode: PresentationMode<ProviderType>? { get set }
+
+    /// Will be called before the presentation occurs.
+    var onPresentCallback: ((FormViewController, ProviderType) -> Void)? { get set }
 }
 
-/// A selector row where the user can pick several options from a pushed view controller
-public final class MultipleSelectorRow<T: Hashable> : _MultipleSelectorRow<T, PushSelectorCell<Set<T>>>, RowType {
-    public required init(tag: String?) {
-        super.init(tag: tag)
-    }
-}
+extension PresenterRowType {
 
-extension Array where Element : Hashable {
-    func deletedIndices(byKeeping elementsToKeep: [Element]) -> [Int] {
-       //create a new set of elements to keep.
-        let setOfElementsToKeep = Set(elementsToKeep)
-        
-        return self.enumerated().flatMap {
-            setOfElementsToKeep.contains($1) ? nil: $0
-        }
+    /**
+     Sets a block to be executed when the row presents a view controller
+     
+     - parameter callback: the block
+     
+     - returns: this row
+     */
+    public func onPresent(_ callback: ((FormViewController, ProviderType) -> Void)?) -> Self {
+        onPresentCallback = callback
+        return self
     }
 }

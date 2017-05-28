@@ -1,4 +1,4 @@
-//  MultipleSelectorRow.swift
+//  PopoverSelectorRow.swift
 //  Eureka ( https://github.com/xmartlabs/Eureka )
 //
 //  Copyright (c) 2016 Xmartlabs SRL ( http://xmartlabs.com )
@@ -24,26 +24,31 @@
 
 import Foundation
 
-open class _MultipleSelectorRow<T: Hashable, Cell: CellType>: GenericMultipleSelectorRow<T, Cell, MultipleSelectorViewController<T>> where Cell: BaseCell, Cell: TypedCellType, Cell.Value == Set<T> {
+open class _PopoverSelectorRow<Cell: CellType> : SelectorRow<Cell, SelectorViewController<Cell.Value>> where Cell: BaseCell, Cell: TypedCellType {
+
     public required init(tag: String?) {
         super.init(tag: tag)
-    }
-}
-
-/// A selector row where the user can pick several options from a pushed view controller
-public final class MultipleSelectorRow<T: Hashable> : _MultipleSelectorRow<T, PushSelectorCell<Set<T>>>, RowType {
-    public required init(tag: String?) {
-        super.init(tag: tag)
-    }
-}
-
-extension Array where Element : Hashable {
-    func deletedIndices(byKeeping elementsToKeep: [Element]) -> [Int] {
-       //create a new set of elements to keep.
-        let setOfElementsToKeep = Set(elementsToKeep)
-        
-        return self.enumerated().flatMap {
-            setOfElementsToKeep.contains($1) ? nil: $0
+        onPresentCallback = { [weak self] (_, viewController) -> Void in
+            guard let porpoverController = viewController.popoverPresentationController, let tableView = self?.baseCell.formViewController()?.tableView, let cell = self?.cell else {
+                fatalError()
+            }
+            porpoverController.sourceView = tableView
+            porpoverController.sourceRect = tableView.convert(cell.detailTextLabel?.frame ?? cell.textLabel?.frame ?? cell.contentView.frame, from: cell)
         }
+        presentationMode = .popover(controllerProvider: ControllerProvider.callback { return SelectorViewController<Cell.Value> { _ in } }, onDismiss: { [weak self] in
+            $0.dismiss(animated: true)
+            self?.reload()
+        })
+    }
+
+    open override func didSelect() {
+        deselect()
+        super.didSelect()
+    }
+}
+
+public final class PopoverSelectorRow<T: Equatable> : _PopoverSelectorRow<PushSelectorCell<T>>, RowType {
+    public required init(tag: String?) {
+        super.init(tag: tag)
     }
 }

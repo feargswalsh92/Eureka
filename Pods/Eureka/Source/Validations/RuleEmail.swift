@@ -1,4 +1,4 @@
-//  MultipleSelectorRow.swift
+//  RuleEmail.swift
 //  Eureka ( https://github.com/xmartlabs/Eureka )
 //
 //  Copyright (c) 2016 Xmartlabs SRL ( http://xmartlabs.com )
@@ -24,26 +24,10 @@
 
 import Foundation
 
-open class _MultipleSelectorRow<T: Hashable, Cell: CellType>: GenericMultipleSelectorRow<T, Cell, MultipleSelectorViewController<T>> where Cell: BaseCell, Cell: TypedCellType, Cell.Value == Set<T> {
-    public required init(tag: String?) {
-        super.init(tag: tag)
-    }
-}
+public class RuleEmail: RuleRegExp {
 
-/// A selector row where the user can pick several options from a pushed view controller
-public final class MultipleSelectorRow<T: Hashable> : _MultipleSelectorRow<T, PushSelectorCell<Set<T>>>, RowType {
-    public required init(tag: String?) {
-        super.init(tag: tag)
+    public init(msg: String = "Field value should be a valid email!") {
+        super.init(regExpr: RegExprPattern.EmailAddress.rawValue, allowsEmpty: true, msg: msg)
     }
-}
 
-extension Array where Element : Hashable {
-    func deletedIndices(byKeeping elementsToKeep: [Element]) -> [Int] {
-       //create a new set of elements to keep.
-        let setOfElementsToKeep = Set(elementsToKeep)
-        
-        return self.enumerated().flatMap {
-            setOfElementsToKeep.contains($1) ? nil: $0
-        }
-    }
 }

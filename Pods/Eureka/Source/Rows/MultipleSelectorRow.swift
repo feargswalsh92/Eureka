@@ -36,14 +36,3 @@ public final class MultipleSelectorRow<T: Hashable> : _MultipleSelectorRow<T, Pu
         super.init(tag: tag)
     }
 }
-
-extension Array where Element : Hashable {
-    func deletedIndices(byKeeping elementsToKeep: [Element]) -> [Int] {
-       //create a new set of elements to keep.
-        let setOfElementsToKeep = Set(elementsToKeep)
-        
-        return self.enumerated().flatMap {
-            setOfElementsToKeep.contains($1) ? nil: $0
-        }
-    }
-}
